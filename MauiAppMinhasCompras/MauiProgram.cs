@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Globalization; // ADICIONADO PARA REGIONALIZAÇÃO R$
 
 namespace MauiAppMinhasCompras
 {
@@ -15,8 +16,14 @@ namespace MauiAppMinhasCompras
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            // INÍCIO DA CONFIGURAÇÃO DE REGIONALIZAÇÃO (AGENDA 06)
+            var culture = new CultureInfo("pt-BR");
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
+            // FIM DA CONFIGURAÇÃO
+
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

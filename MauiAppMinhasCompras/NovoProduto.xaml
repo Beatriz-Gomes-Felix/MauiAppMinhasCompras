@@ -1,13 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiAppMinhasCompras.NovoProduto"
              Title="Editar Produto">
 
     <VerticalStackLayout Padding="20" Spacing="15">
-        <Entry x:Name="txtDescricao" Text="{Binding Descricao}" Placeholder="Descrição" />
-        <Entry x:Name="txtQuantidade" Text="{Binding Quantidade}" Placeholder="Quantidade" Keyboard="Numeric" />
-        <Entry x:Name="txtPreco" Text="{Binding Preco}" Placeholder="Preço" Keyboard="Numeric" />
+        <Label Text="Editar informações do produto" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" />
 
-        <Button Text="Salvar Alterações" Clicked="OnAtualizarClicked" BackgroundColor="DarkViolet" />
+        <Entry x:Name="txtDescricao" Text="{Binding Descricao}" Placeholder="Descrição" />
+
+        <HorizontalStackLayout Spacing="10">
+            <Entry x:Name="txtQuantidade" Text="{Binding Quantidade}" Placeholder="Qtd" Keyboard="Numeric" WidthRequest="100" />
+            <Entry x:Name="txtPreco" Text="{Binding Preco}" Placeholder="Preço" Keyboard="Numeric" WidthRequest="150" />
+        </HorizontalStackLayout>
+
+        <Picker x:Name="pckCategoria" Title="Selecione a Categoria">
+            <Picker.Items>
+                <x:String>Alimentos</x:String>
+                <x:String>Higiene</x:String>
+                <x:String>Limpeza</x:String>
+                <x:String>Outros</x:String>
+            </Picker.Items>
+        </Picker>
+
+        <VerticalStackLayout Spacing="5">
+            <Label Text="Data da Compra:" />
+            <DatePicker x:Name="dtpData" Format="dd/MM/yyyy" />
+        </VerticalStackLayout>
+
+        <Button Text="Salvar Alterações" 
+                Clicked="OnAtualizarClicked" 
+                BackgroundColor="DarkViolet" 
+                Margin="0,20,0,0" />
+
+        <Button Text="Cancelar" 
+                Clicked="OnCancelarClicked" 
+                BackgroundColor="Gray" />
     </VerticalStackLayout>
 </ContentPage>

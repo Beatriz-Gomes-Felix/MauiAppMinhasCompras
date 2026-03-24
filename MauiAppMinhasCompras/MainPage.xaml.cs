@@ -1,5 +1,6 @@
 ﻿using MauiAppMinhasCompras.Models;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace MauiAppMinhasCompras;
 
@@ -17,6 +18,12 @@ public partial class MainPage : ContentPage
     {
         base.OnAppearing();
         await CarregarProdutos();
+    }
+
+    private async void OnAtualizarLista(object sender, EventArgs e)
+    {
+        await CarregarProdutos();
+        atualizarLista.IsRefreshing = false;
     }
 
     private async Task CarregarProdutos()
@@ -61,29 +68,37 @@ public partial class MainPage : ContentPage
         try
         {
             if (string.IsNullOrWhiteSpace(txtDescricao.Text))
-            {
-                throw new Exception("Por favor, preencha a descrição do produto.");
-            }
+                throw new Exception("Preencha a descrição.");
 
-            if (string.IsNullOrWhiteSpace(txtQuantidade.Text) || string.IsNullOrWhiteSpace(txtPreco.Text))
-            {
-                throw new Exception("Quantidade e Preço são obrigatórios.");
-            }
+            if (pckCategoria.SelectedItem == null)
+                throw new Exception("Selecione uma categoria.");
+
+            // CORREÇÃO DA VÍRGULA/PONTO:
+            // Tenta converter usando a cultura atual do sistema
+            if (!double.TryParse(txtQuantidade.Text, CultureInfo.CurrentCulture, out double qtd))
+                qtd = 0;
+
+            if (!double.TryParse(txtPreco.Text, CultureInfo.CurrentCulture, out double preco))
+                throw new Exception("Preço inválido.");
 
             var p = new Produto
             {
                 Descricao = txtDescricao.Text,
-                Quantidade = Convert.ToDouble(txtQuantidade.Text),
-                Preco = Convert.ToDouble(txtPreco.Text)
+                Quantidade = qtd,
+                Preco = preco,
+                Categoria = pckCategoria.SelectedItem.ToString(),
+                DataCadastro = dtpData.Date
             };
 
             await App.Db.Insert(p);
-            await DisplayAlert("Sucesso!", "Produto adicionado com sucesso!", "OK");
+            await DisplayAlert("Sucesso!", "Produto adicionado!", "OK");
 
             searchBar.Text = string.Empty;
             await CarregarProdutos();
 
             txtDescricao.Text = txtQuantidade.Text = txtPreco.Text = string.Empty;
+            pckCategoria.SelectedIndex = -1;
+            dtpData.Date = DateTime.Now;
         }
         catch (Exception ex)
         {
@@ -108,17 +123,14 @@ public partial class MainPage : ContentPage
         }
     }
 
-    // MÉTODO DE NAVEGAÇÃO - AGENDA 05
     private async void OnItemSelected(object sender, SelectionChangedEventArgs e)
     {
         try
         {
             if (e.CurrentSelection.FirstOrDefault() is Produto produtoSelecionado)
             {
-                // Limpa a seleção da lista para permitir clicar novamente
                 ((CollectionView)sender).SelectedItem = null;
 
-                // Navega para a página NovoProduto passando o objeto selecionado
                 await Navigation.PushAsync(new NovoProduto
                 {
                     BindingContext = produtoSelecionado
