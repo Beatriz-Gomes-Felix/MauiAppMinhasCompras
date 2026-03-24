@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiAppMinhasCompras.MainPage"
+             Title="Minhas Compras">
+
+    <Grid RowDefinitions="Auto, *" Padding="20">
+        <VerticalStackLayout Grid.Row="0" Spacing="10">
+            <Entry x:Name="txtDescricao" Placeholder="Descrição do Produto" />
+            <HorizontalStackLayout Spacing="10">
+                <Entry x:Name="txtQuantidade" Placeholder="Qtd" Keyboard="Numeric" WidthRequest="100"/>
+                <Entry x:Name="txtPreco" Placeholder="Preço" Keyboard="Numeric" WidthRequest="150"/>
+            </HorizontalStackLayout>
+            <Button Text="Adicionar Produto" Clicked="OnSalvarClicked" BackgroundColor="DarkViolet" />
+        </VerticalStackLayout>
+
+        <CollectionView Grid.Row="1" x:Name="listaProdutos" Margin="0,20,0,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Deletar" BackgroundColor="Red" 
+                                           Invoked="OnDeletarClicked" CommandParameter="{Binding .}" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+                        <Border Margin="0,5" Padding="15">
+                            <HorizontalStackLayout Spacing="20">
+                                <Label Text="{Binding Descricao}" FontAttributes="Bold" />
+                                <Label Text="{Binding Quantidade, StringFormat='Qtd: {0}'}" />
+                                <Label Text="{Binding Preco, StringFormat='R$ {0:F2}'}" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>
