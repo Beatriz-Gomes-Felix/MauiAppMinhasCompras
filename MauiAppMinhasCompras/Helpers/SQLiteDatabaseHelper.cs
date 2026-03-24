@@ -10,6 +10,7 @@ namespace MauiAppMinhasCompras.Helpers
         public SQLiteDatabaseHelper(string path)
         {
             _conn = new SQLiteAsyncConnection(path);
+            // Cria a tabela se ela não existir
             _conn.CreateTableAsync<Produto>().Wait();
         }
 
@@ -18,10 +19,10 @@ namespace MauiAppMinhasCompras.Helpers
             return _conn.InsertAsync(p);
         }
 
-        public Task<List<Produto>> Update(Produto p)
+        // Ajustado para retornar Task<int> que é o padrão de linhas afetadas
+        public Task<int> Update(Produto p)
         {
-            string sql = "UPDATE Produto SET Descricao=?, Quantidade=?, Preco=? WHERE Id=?";
-            return _conn.QueryAsync<Produto>(sql, p.Descricao, p.Quantidade, p.Preco, p.Id);
+            return _conn.UpdateAsync(p);
         }
 
         public Task<int> Delete(int id)
@@ -34,10 +35,12 @@ namespace MauiAppMinhasCompras.Helpers
             return _conn.Table<Produto>().ToListAsync();
         }
 
+        // IMPLEMENTAÇÃO AGENDA 04: Busca com parâmetros (Mais seguro)
         public Task<List<Produto>> Search(string q)
         {
-            string sql = "SELECT * FROM Produto WHERE Descricao LIKE '%" + q + "%'";
-            return _conn.QueryAsync<Produto>(sql);
+            // O uso de '?' evita erros de sintaxe e problemas de segurança
+            string sql = "SELECT * FROM Produto WHERE Descricao LIKE ?";
+            return _conn.QueryAsync<Produto>(sql, "%" + q + "%");
         }
     }
 }

@@ -26,6 +26,27 @@ public partial class MainPage : ContentPage
         foreach (var p in lista) produtos.Add(p);
     }
 
+    // IMPLEMENTAÇÃO AGENDA 04: Lógica de Busca Dinâmica
+    private async void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+    {
+        // Captura o texto digitado
+        string textoDigitado = e.NewTextValue;
+
+        // Se o texto estiver vazio, recarrega a lista completa
+        if (string.IsNullOrWhiteSpace(textoDigitado))
+        {
+            await CarregarProdutos();
+        }
+        else
+        {
+            // Busca no banco apenas os itens que combinam com a descrição
+            var listaFiltrada = await App.Db.Search(textoDigitado);
+
+            produtos.Clear();
+            foreach (var p in listaFiltrada) produtos.Add(p);
+        }
+    }
+
     private async void OnSalvarClicked(object sender, EventArgs e)
     {
         try
@@ -40,7 +61,12 @@ public partial class MainPage : ContentPage
             };
 
             await App.Db.Insert(p);
+
+            // Limpa o campo de busca ao salvar um novo item para mostrar a lista atualizada
+            searchBar.Text = string.Empty;
+
             await CarregarProdutos();
+
             txtDescricao.Text = txtQuantidade.Text = txtPreco.Text = string.Empty;
         }
         catch (Exception ex)

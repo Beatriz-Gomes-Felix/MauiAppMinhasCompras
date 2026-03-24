@@ -5,13 +5,21 @@
              Title="Minhas Compras">
 
     <Grid RowDefinitions="Auto, *" Padding="20">
+
         <VerticalStackLayout Grid.Row="0" Spacing="10">
             <Entry x:Name="txtDescricao" Placeholder="Descrição do Produto" />
+
             <HorizontalStackLayout Spacing="10">
                 <Entry x:Name="txtQuantidade" Placeholder="Qtd" Keyboard="Numeric" WidthRequest="100"/>
                 <Entry x:Name="txtPreco" Placeholder="Preço" Keyboard="Numeric" WidthRequest="150"/>
             </HorizontalStackLayout>
+
             <Button Text="Adicionar Produto" Clicked="OnSalvarClicked" BackgroundColor="DarkViolet" />
+
+            <SearchBar x:Name="searchBar" 
+                       Placeholder="Buscar produto..." 
+                       TextChanged="OnSearchTextChanged" 
+                       Margin="0,10,0,0" />
         </VerticalStackLayout>
 
         <CollectionView Grid.Row="1" x:Name="listaProdutos" Margin="0,20,0,0">
@@ -20,10 +28,13 @@
                     <SwipeView>
                         <SwipeView.RightItems>
                             <SwipeItems>
-                                <SwipeItem Text="Deletar" BackgroundColor="Red" 
-                                           Invoked="OnDeletarClicked" CommandParameter="{Binding .}" />
+                                <SwipeItem Text="Deletar" 
+                                           BackgroundColor="Red" 
+                                           Invoked="OnDeletarClicked" 
+                                           CommandParameter="{Binding .}" />
                             </SwipeItems>
                         </SwipeView.RightItems>
+
                         <Border Margin="0,5" Padding="15">
                             <HorizontalStackLayout Spacing="20">
                                 <Label Text="{Binding Descricao}" FontAttributes="Bold" />
